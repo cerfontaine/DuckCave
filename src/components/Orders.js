@@ -10,13 +10,13 @@ export default function Order(){
     }, []);
 
     function getPosts() {
-        axios.get(`https://duckcave.com/api/endpoints/webhooks`).then(function(response) {
+        axios.get(`https://duckcave.com/api/endpoints/orders`).then(function(response) {
             setPosts(response.data);
 
         });
     }
     return(
-        <div class="flex flex-col">
+        <div class="flex flex-col bg-gray-100">
             <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
@@ -32,10 +32,10 @@ export default function Order(){
                     <tbody>
                     {posts.map((post, key) =>
                     <tr class="border-b dark:border-neutral-500">
-                        <td class="whitespace-nowrap px-6 py-4 font-medium">post.</td>
-                        <td class="whitespace-nowrap px-6 py-4">Mark</td>
-                        <td class="whitespace-nowrap px-6 py-4">Otto</td>
-                        <td class="whitespace-nowrap px-6 py-4">@mdo</td>
+                        <td class="whitespace-nowrap px-6 py-4 font-medium">{post.payid}</td>
+                        <td class="whitespace-nowrap px-6 py-4">{post.webhook_date}</td>
+                        <td class="whitespace-nowrap px-6 py-4">{post.amount}</td>
+                        <td class="whitespace-nowrap px-6 py-4">{post.orderstatus}</td>
                     </tr>
                     )}
                     </tbody>

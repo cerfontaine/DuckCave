@@ -35,7 +35,7 @@ switch($method) {
             $newson = json_decode(file_get_contents('php://input'));
             $payid = $newson->payment->id;
             $status = $newson->type;
-            $amount = $newson->payment->paymentOutput->amountOfMoney->amount
+            $amount = $newson->payment->paymentOutput->amountOfMoney->amount;
             $dateweb = date('Y-m-d H:i:s');
             
 

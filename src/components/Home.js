@@ -1,7 +1,7 @@
 
 export default function Home(){
     return(
-        <div class="container my-24 mx-auto md:px-6">
+        <div class="container bg-gray-100 my-24 mx-auto md:px-6">
 
             <div class="container my-24 mx-auto md:px-6">
 
