@@ -5,6 +5,16 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
 
+require __DIR__ . '/vendor/autoload.php';
+
+use OnlinePayments\Sdk\DefaultConnection;
+use OnlinePayments\Sdk\CommunicatorConfiguration;
+use OnlinePayments\Sdk\Communicator;
+use OnlinePayments\Sdk\Client;
+use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
+use OnlinePayments\Sdk\Domain\AmountOfMoney;
+use OnlinePayments\Sdk\Domain\Order;
+use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 
 include 'DBbConnect.php';
 $objDb = new DbConnect;
@@ -33,9 +43,9 @@ switch($method) {
     case "POST":
         if($_SERVER['REQUEST_URI'] == "/api/endpoints/webhooks"){
             $newson = json_decode(file_get_contents('php://input'));
-            $payid = $newson->payment->id;
+            $payid = substr($newson->payment->id, 0, -2);
             $status = $newson->type;
-            $amount = $newson->payment->paymentOutput->amountOfMoney->amount;
+            $amount = intval($newson->payment->paymentOutput->amountOfMoney->amount)/100;
             $dateweb = date('Y-m-d H:i:s');
             
 
@@ -49,6 +59,56 @@ switch($method) {
             $stmt->execute();
 
             echo json_encode(array()); 
+        }
+        elseif($_SERVER['REQUEST_URI'] == "/api/endpoints/hostedcheckout"){
+            $user = json_decode( file_get_contents('php://input') );
+            $yourApiKey = "D3E746548D2BB8648DBE";    
+            $yourApiSecret = "syVXH2CYRMMUWa1ARTteHUbscow6CcmbmXeCgviD6GAU+VXvUUMDYWgp2mWazs5L+63Kt0ujEUadNMUWsjze3g==";
+            $yourPspId = "ilovedamianos";
+    
+            # Create a URI for our TEST/LIVE environment
+            $apiEndpoint = "https://payment.preprod.direct.worldline-solutions.com";
+    
+            # Initialise the client with the apikey, apisecret and URI
+            $connection = new DefaultConnection();
+    
+            $communicatorConfiguration = new CommunicatorConfiguration(
+                $yourApiKey,
+                $yourApiSecret,
+                $apiEndpoint,
+                'OnlinePayments'
+            );
+    
+            $communicator = new Communicator(
+                $connection,
+                $communicatorConfiguration
+            );
+    
+            $client = new Client($communicator);
+            
+
+            $createHostedCheckoutRequest = new CreateHostedCheckoutRequest();
+            $amountOfMoney = new AmountOfMoney();
+            $amountOfMoney->setAmount($user->amount*100);
+            $amountOfMoney->setCurrencyCode("EUR");
+    
+            $order = new Order();
+            $order->setAmountOfMoney($amountOfMoney);
+    
+            $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
+            $hostedCheckoutSpecificInput->setReturnUrl("https://duckcave.com/success");
+    
+            $createHostedCheckoutRequest->setOrder($order);
+            $createHostedCheckoutRequest->setHostedCheckoutSpecificInput($hostedCheckoutSpecificInput);
+    
+            # ...
+    
+            # Send the request to your PSPID on our platform and receive it via an instance of CreateHostedCheckoutResponse
+            $createHostedCheckoutResponse = $client->merchant($yourPspId)->hostedCheckout()->createHostedCheckout($createHostedCheckoutRequest);
+            $hostedCheckoutUrl = $createHostedCheckoutResponse->getRedirectUrl();
+
+            echo($hostedCheckoutUrl);
+            break;
         }
        
 }
