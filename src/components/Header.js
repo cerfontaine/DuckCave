@@ -30,7 +30,7 @@ export default function Header(){
 
 
                 <div
-                class="!visible hidden flex-grow basis-[100%] items-center lg:!flex lg:basis-auto"
+                class="!visible sm:hidden flex-grow basis-[100%] items-center lg:!flex lg:basis-auto"
                 id="navbarSupportedContent1"
                 data-te-collapse-item>
 

@@ -1,6 +1,6 @@
 export default function Footer(){
     return(
-        <section class="mb-12">
+        <section class="sm:mb-12 mb-24">
             <div
                 class="alert alert-dismissible fade show fixed bottom-0 right-0 left-0 z-[1030] w-full items-center justify-between bg-neutral-900 py-4 px-6 text-center text-white md:flex md:text-left">
                 <div class="mb-4 flex flex-wrap items-center justify-center md:mb-0 md:justify-start">

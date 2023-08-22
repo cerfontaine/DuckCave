@@ -46,16 +46,20 @@ switch($method) {
             $payid = substr($newson->payment->id, 0, -2);
             $status = $newson->type;
             $amount = intval($newson->payment->paymentOutput->amountOfMoney->amount)/100;
-            $dateweb = date('Y-m-d H:i:s');
+            $statusCode = $newson->payment->statusOutput->statusCode;
+            $now = DateTime::createFromFormat('U.u', microtime(true));
+            $dateweb = $now->format("Y-m-d H:i:s.u");
+            $ipaddr = $_SERVER['REMOTE_ADDR'];
             
 
-            
-            $sql = "INSERT INTO Orders(orderid, amount, payid, orderstatus, webhook_date) VALUES(null, :amount, :payid, :orderstatus, :webhook_date )";
+            $sql = "INSERT INTO Orders(orderid, amount, payid, orderstatus, webhook_date, statusCode, ipaddr) VALUES(null, :amount, :payid, :orderstatus, :webhook_date, :statusCode, :ipaddr )";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':amount', $amount);
             $stmt->bindParam(':payid', $payid);
             $stmt->bindParam(':orderstatus', $status);
             $stmt->bindParam(':webhook_date', $dateweb);
+            $stmt->bindParam(':statusCode', $statusCode);
+            $stmt->bindParam(':ipaddr', $ipaddr);
             $stmt->execute();
 
             echo json_encode(array()); 
